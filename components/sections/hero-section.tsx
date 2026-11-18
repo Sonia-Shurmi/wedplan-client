@@ -34,7 +34,7 @@ const backgroundY = useTransform(
   className="absolute inset-0"
 >
   <Image
-    src="/images/hero-wedding.jpg"
+    src="/images/wedding.jpg"
     alt=""
     fill
     priority
