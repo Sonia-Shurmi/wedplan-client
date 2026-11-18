@@ -1,0 +1,10 @@
+import { toNextJsHandler } from "better-auth/next-js"
+
+import { auth } from "@/lib/auth"
+
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+
+const handlers = toNextJsHandler(auth)
+
+export const { GET, POST, PATCH, PUT, DELETE } = handlers
