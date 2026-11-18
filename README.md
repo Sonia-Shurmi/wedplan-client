@@ -172,6 +172,7 @@ wedplan-client/
 │   ├── auth.ts                      # Better Auth server config
 │   ├── auth-client.ts               # Better Auth React client
 │   ├── api.ts                       # typed fetch wrapper + JWT attach
+│   ├── upload.ts                    # validated ImgBB upload with progress
 │   └── utils.ts
 ├── hooks/
 ├── proxy.ts                         # route protection (Next.js 16 middleware)

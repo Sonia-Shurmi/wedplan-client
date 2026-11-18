@@ -88,7 +88,7 @@ const Footer = () => {
           <div className="space-y-5">
             <h3 className="font-heading text-lg">Get in Touch</h3>
             <p className="text-sm leading-7 text-white/60">
-              Have a question or need assistance? We'd love to hear from you.
+              Have a question or need assistance? We&apos;d love to hear from you.
             </p>
 
             <a

@@ -8,7 +8,7 @@
  * memory only — never in localStorage — and refreshed once on a 401.
  */
 
-const apiBaseUrl = (
+export const apiBaseUrl = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api"
 ).replace(/\/+$/, "")
 
@@ -110,7 +110,7 @@ const getToken = async (forceRefresh = false): Promise<string> => {
   return fetchJwt()
 }
 
-const sendRequest = async <T>(
+const sendRequest = async (
   path: string,
   options: RequestOptions,
   token: string,
@@ -162,13 +162,13 @@ export const apiRequest = async <T>(
   options: RequestOptions = {},
 ): Promise<ApiEnvelope<T>> => {
   let token = await getToken()
-  let response = await sendRequest<T>(path, options, token)
+  let response = await sendRequest(path, options, token)
 
   // A 401 before the controller ran means nothing was written, so one retry
   // with a fresh token is safe for every method.
   if (response.status === 401) {
     token = await getToken(true)
-    response = await sendRequest<T>(path, options, token)
+    response = await sendRequest(path, options, token)
   }
 
   return parseResponse<T>(response)
@@ -200,3 +200,9 @@ export const api = {
 export const clearApiToken = () => {
   cachedToken = null
 }
+
+/**
+ * Exposes the JWT to XMLHttpRequest callers (image uploads need upload
+ * progress events, which fetch cannot report).
+ */
+export const getApiToken = (forceRefresh = false) => getToken(forceRefresh)
