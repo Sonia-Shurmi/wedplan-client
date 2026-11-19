@@ -26,8 +26,8 @@ export default async function CustomerDashboardPage() {
         },
         {
           label: "Bookings",
-          value: "0",
-          hint: "Confirmed and pending bookings will appear here with dates.",
+          value: "—",
+          hint: "Track every request and the vendor's answer in My bookings.",
           icon: CalendarDays,
         },
         {
@@ -38,8 +38,8 @@ export default async function CustomerDashboardPage() {
         },
       ]}
       actions={[
+        { label: "My bookings", href: "/dashboard/customer/bookings" },
         { label: "Browse services", href: "/services" },
-        { label: "Back to home", href: "/" },
       ]}
       note="Your numbers update as soon as you save a vendor or send your first booking request."
     />

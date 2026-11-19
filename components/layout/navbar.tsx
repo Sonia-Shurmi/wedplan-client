@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
+  CalendarCheck,
   ChevronDown,
   LayoutDashboard,
   LogOut,
@@ -112,6 +113,17 @@ const Navbar = () => {
         <LayoutDashboard size={16} />
         Dashboard
       </Link>
+
+      {user?.role === "customer" ? (
+        <Link
+          href="/dashboard/customer/bookings"
+          onClick={closeAll}
+          className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <CalendarCheck size={16} />
+          My bookings
+        </Link>
+      ) : null}
 
       <Link
         href="/dashboard/profile"
