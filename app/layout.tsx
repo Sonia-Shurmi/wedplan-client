@@ -1,11 +1,10 @@
-
-import { Playfair_Display, Montserrat } from "next/font/google"
+import type { Metadata } from "next"
+import { Montserrat, Playfair_Display } from "next/font/google"
+import { Toaster } from "sonner"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import Navbar from "@/components/layout/navbar"
-import Footer from "@/components/layout/footer"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,6 +18,15 @@ const montserrat = Montserrat({
   display: "swap",
 })
 
+export const metadata: Metadata = {
+  title: {
+    default: "WedPlan — Wedding marketplace",
+    template: "%s · WedPlan",
+  },
+  description:
+    "Discover trusted wedding venues, photographers, florists, caterers and stylists. Plan every detail in one thoughtful marketplace.",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,17 +36,22 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={cn(
         "antialiased",
         playfair.variable,
-        montserrat.variable
+        montserrat.variable,
       )}
     >
       <body className="font-sans">
         <ThemeProvider>
-          <Navbar/>
           {children}
-          <Footer/>
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            toastOptions={{ className: "font-sans" }}
+          />
         </ThemeProvider>
       </body>
     </html>
