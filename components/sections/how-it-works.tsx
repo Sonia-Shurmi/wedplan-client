@@ -11,6 +11,7 @@ const steps = [
     description:
       "Browse curated categories and compare trusted vendors by style, location and starting price.",
     icon: Search,
+    image: "/images/micheile-henderson-gnm2op0m2pw-unsplash.jpg",
   },
   {
     number: "02",
@@ -18,6 +19,7 @@ const steps = [
     description:
       "Share your event date, venue and vision in a short request so vendors know exactly what you need.",
     icon: MessageSquareHeart,
+    image: "/images/jonathan-borba-g3oEF_BNXwE-unsplash.jpg",
   },
   {
     number: "03",
@@ -25,6 +27,7 @@ const steps = [
     description:
       "Follow every response from your dashboard and confirm the partners who will bring your day together.",
     icon: CalendarCheck,
+    image: "/images/jakob-owens-lR--zjgQRY0-unsplash.jpg",
   },
 ]
 
@@ -78,7 +81,7 @@ export default function HowItWorks() {
               >
                 <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-wedplan-sage/50 bg-muted">
                   <Image
-                    src="/images/wedding.jpg"
+                    src={step.image}
                     alt=""
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"

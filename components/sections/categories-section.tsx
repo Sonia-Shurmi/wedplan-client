@@ -59,7 +59,7 @@ export default function CategoriesSection() {
                 className="group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-2xl border border-wedplan-sage/60 p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
                 <Image
-                  src="/images/wedding.jpg"
+                  src={category.image}
                   alt=""
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

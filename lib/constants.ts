@@ -34,6 +34,8 @@ export interface CategoryDefinition {
   /** Stable key for links and filters. */
   slug: string
   description: string
+  /** Homepage card photo, served from /public/images. */
+  image: string
 }
 
 /**
@@ -46,36 +48,42 @@ export const CATEGORIES: readonly CategoryDefinition[] = [
     slug: "photography-videography",
     description:
       "Photographers and filmmakers who capture the day exactly as it felt.",
+    image: "/images/nathan-dumlao-duNBz_LBaEc-unsplash.jpg",
   },
   {
     name: "Wedding Venues",
     slug: "wedding-venues",
     description:
       "Gardens, ballrooms and heritage halls for ceremonies of every size.",
+    image: "/images/jeremy-wong-weddings-K41SGnGKxVk-unsplash.jpg",
   },
   {
     name: "Decoration & Florist",
     slug: "decoration-florist",
     description:
       "Styling, florals and lighting that turn an empty room into your story.",
+    image: "/images/katrien-sterckx-fn0xXL9szcU-unsplash.jpg",
   },
   {
     name: "Catering Services",
     slug: "catering-services",
     description:
       "Menus, tastings and service teams planned around every guest list.",
+    image: "/images/jennifer-kalenberg-Rkj0ms67lio-unsplash.jpg",
   },
   {
     name: "Makeup & Styling",
     slug: "makeup-styling",
     description:
       "Bridal looks and hair styling that hold from first look to last dance.",
+    image: "/images/pexels-bride-1837148.jpg",
   },
   {
     name: "Wedding Fashion",
     slug: "wedding-fashion",
     description:
       "Bridal wear, groomswear and tailoring for the whole wedding party.",
+    image: "/images/sfetfedyhghj-wedding-dress-1486260.jpg",
   },
 ] as const
 
