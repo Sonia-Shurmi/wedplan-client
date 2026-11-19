@@ -2,24 +2,21 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useScroll, useTransform } from "motion/react"
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { ArrowRight, Heart, Store } from "lucide-react"
 import { useRef } from "react"
 
 
 const HeroSection = () => {
-const heroRef = useRef<HTMLElement | null>(null)
+  const heroRef = useRef<HTMLElement | null>(null)
+  const reduceMotion = useReducedMotion()
 
-const { scrollYProgress } = useScroll({
-  target: heroRef,
-  offset: ["start start", "end start"],
-})
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  })
 
-const backgroundY = useTransform(
-  scrollYProgress,
-  [0, 1],
-  [0, 100]
-)
+  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 100])
 
   return (
     <section
@@ -27,12 +24,9 @@ const backgroundY = useTransform(
   className="relative flex min-h-[calc(100svh-5rem)] items-center justify-center overflow-hidden bg-wedplan-dark text-white"
 > {/* Background image */}
       <motion.div
-  style={{
-    y: backgroundY,
-    scale: 1.15,
-  }}
-  className="absolute inset-0"
->
+        style={reduceMotion ? undefined : { y: backgroundY, scale: 1.15 }}
+        className="absolute inset-0"
+      >
   <Image
     src="/images/wedding.jpg"
     alt=""
@@ -48,12 +42,13 @@ const backgroundY = useTransform(
 
       {/* Hero content */}
       <motion.div
-        initial={{ opacity: 0, y: 80, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{
-            duration: 1.4,
-            ease: [0.22, 1, 0.36, 1],
-        }}
+        initial={reduceMotion ? false : { opacity: 0, y: 80, scale: 0.96 }}
+        animate={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : { duration: 1.4, ease: [0.22, 1, 0.36, 1] }
+        }
         className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center px-6 py-24 text-center"
       >
         {/* Eyebrow */}
@@ -110,8 +105,48 @@ const backgroundY = useTransform(
           </Link>
         </div>
 
+        {/* Trust strip */}
+        <div className="mt-14 grid w-full max-w-4xl gap-4 text-left sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { value: "6+", label: "Curated Categories" },
+            { value: "100%", label: "Vetted Listings" },
+            { value: "Direct", label: "Booking Tracking" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl border border-white/15 bg-white/5 px-5 py-4 backdrop-blur-sm"
+            >
+              <p className="font-heading text-2xl font-semibold text-wedplan-sage">
+                {item.value}
+              </p>
+              <p className="mt-1 text-xs font-medium tracking-wide text-white/80 uppercase">
+                {item.label}
+              </p>
+            </div>
+          ))}
+          <div className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-sm">
+            <div className="relative size-12 shrink-0 overflow-hidden rounded-lg ring-1 ring-white/20">
+              <Image
+                src="/images/wedding.jpg"
+                alt=""
+                fill
+                sizes="48px"
+                className="object-cover"
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-white">
+                Verified Wedding Pros
+              </p>
+              <p className="text-xs leading-snug text-white/70">
+                Reviewed before going live
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom decoration */}
-        <div className="mt-16 flex flex-col items-center gap-3">
+        <div className="mt-14 flex flex-col items-center gap-3">
           <span className="h-10 w-px bg-gradient-to-b from-wedplan-sage to-transparent" />
           <span className="text-[10px] uppercase tracking-[0.3em] text-white/70">
             Discover Your Possibilities
