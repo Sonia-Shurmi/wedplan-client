@@ -10,6 +10,7 @@ import {
   CalendarCheck,
   ChevronDown,
   Compass,
+  Crown,
   LayoutDashboard,
   ListChecks,
   LogOut,
@@ -33,7 +34,8 @@ interface ShellUser {
   email: string
   image: string | null
   role: UserRole
-  subscriptionPlan: string | null
+  /** Derived server-side from the plan and its expiry. */
+  isPremium: boolean
 }
 
 interface NavItem {
@@ -84,6 +86,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           label: "Add a service",
           href: "/dashboard/vendor/services/new",
           icon: PlusCircle,
+        },
+        {
+          label: "Subscription",
+          href: "/dashboard/vendor/subscription",
+          icon: Crown,
         },
         { label: "Browse marketplace", href: "/services", icon: Compass },
         {
@@ -263,9 +270,17 @@ export function DashboardShell({
           <p className="mt-1 truncate text-sm font-medium text-foreground">
             {user.name || "WedPlan user"}
           </p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
-            {roleLabel(user.role)}
-          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <p className="truncate text-xs text-muted-foreground">
+              {roleLabel(user.role)}
+            </p>
+            {user.role === "vendor" && user.isPremium ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-wedplan-primary/10 px-2 py-0.5 text-[10px] font-semibold text-wedplan-primary">
+                <Crown size={11} />
+                Premium
+              </span>
+            ) : null}
+          </div>
         </div>
         <Link
           href="/"
@@ -333,7 +348,7 @@ export function DashboardShell({
             </div>
 
             <div className="flex items-center gap-3">
-              {user.role === "vendor" && user.subscriptionPlan === "premium" ? (
+              {user.role === "vendor" && user.isPremium ? (
                 <span className="hidden items-center gap-1.5 rounded-full bg-wedplan-sage/40 px-3 py-1 text-xs font-semibold text-wedplan-dark sm:inline-flex">
                   <Sparkles size={13} />
                   Premium

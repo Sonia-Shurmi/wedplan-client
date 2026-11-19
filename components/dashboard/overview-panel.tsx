@@ -257,6 +257,10 @@ export function VendorOverviewPanel({
       actions={[
         { label: "Booking requests", href: "/dashboard/vendor/bookings" },
         { label: "Add a service", href: "/dashboard/vendor/services/new" },
+        {
+          label: planIsLive ? "Manage plan" : "Upgrade to Premium",
+          href: "/dashboard/vendor/subscription",
+        },
       ]}
     />
   )

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import DashboardShell from "@/components/dashboard/dashboard-shell"
 import { isUserRole } from "@/lib/constants"
 import { requireSession } from "@/lib/session"
+import { isActivePremium } from "@/lib/subscription"
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -24,7 +25,10 @@ export default async function DashboardLayout({
         email: user.email ?? "",
         image: user.image ?? null,
         role: isUserRole(user.role) ? user.role : "customer",
-        subscriptionPlan: user.subscriptionPlan ?? "free",
+        isPremium: isActivePremium(
+          user.subscriptionPlan,
+          user.subscriptionExpiresAt,
+        ),
       }}
     >
       {children}
