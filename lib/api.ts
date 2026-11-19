@@ -141,6 +141,37 @@ const sendRequest = async (
   }
 }
 
+/**
+ * Public endpoints must work with no Better Auth session at all, so they skip
+ * the JWT exchange entirely. `api.get` is only for protected routes.
+ */
+const sendPublicRequest = async (
+  path: string,
+  options: RequestOptions,
+): Promise<Response> => {
+  const url = `${apiBaseUrl}${path.startsWith("/") ? path : `/${path}`}`
+  const headers = new Headers(options.headers)
+  const hasBody = options.body !== undefined
+
+  if (hasBody && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json")
+  }
+
+  try {
+    return await fetch(url, {
+      ...options,
+      headers,
+      cache: "no-store",
+      body: hasBody ? JSON.stringify(options.body) : undefined,
+    })
+  } catch {
+    throw new ApiError(
+      0,
+      "Cannot reach the WedPlan API. Please check that the server is running.",
+    )
+  }
+}
+
 const parseResponse = async <T>(response: Response): Promise<ApiEnvelope<T>> => {
   const payload = (await response.json().catch(() => null)) as
     | ApiEnvelope<T>
@@ -177,6 +208,15 @@ export const apiRequest = async <T>(
 export const api = {
   get: <T>(path: string, options: Omit<RequestOptions, "method" | "body"> = {}) =>
     apiRequest<T>(path, { ...options, method: "GET" }),
+
+  /** Unauthenticated GET for public listings, categories and featured data. */
+  publicGet: async <T>(
+    path: string,
+    options: Omit<RequestOptions, "method" | "body"> = {},
+  ) =>
+    parseResponse<T>(
+      await sendPublicRequest(path, { ...options, method: "GET" }),
+    ),
 
   post: <T>(
     path: string,
