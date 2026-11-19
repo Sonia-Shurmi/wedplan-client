@@ -1,6 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import type { LucideIcon } from "lucide-react"
 import { ArrowUpRight } from "lucide-react"
+
+import { StatCard } from "./stat-card"
 
 export interface OverviewStat {
   label: string
@@ -23,10 +27,7 @@ interface DashboardOverviewProps {
   note?: string
 }
 
-/**
- * Shared header and stat grid for the three role dashboards. The real metrics
- * arrive with the stats APIs; until then the cards explain what will live here.
- */
+/** Shared header and stat grid for the three role dashboards. */
 export function DashboardOverview({
   eyebrow,
   title,
@@ -71,29 +72,15 @@ export function DashboardOverview({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat) => {
-          const Icon = stat.icon
-
-          return (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-border bg-card p-5"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <span className="flex size-9 items-center justify-center rounded-lg bg-wedplan-sage/30 text-wedplan-primary">
-                  <Icon size={17} />
-                </span>
-              </div>
-              <p className="mt-4 font-heading text-3xl text-foreground">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                {stat.hint}
-              </p>
-            </div>
-          )
-        })}
+        {stats.map((stat) => (
+          <StatCard
+            key={stat.label}
+            label={stat.label}
+            value={stat.value}
+            hint={stat.hint}
+            icon={stat.icon}
+          />
+        ))}
       </div>
 
       {note ? (

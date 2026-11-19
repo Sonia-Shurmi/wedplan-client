@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
-import { CalendarCheck, Sparkles, Store } from "lucide-react"
 
-import { DashboardOverview } from "@/components/dashboard/overview"
+import { VendorOverviewPanel } from "@/components/dashboard/overview-panel"
 import VendorServicesPanel from "@/components/vendor/vendor-services-panel"
 import { requireRole } from "@/lib/session"
 
@@ -11,42 +10,18 @@ export const metadata: Metadata = {
 
 export default async function VendorDashboardPage() {
   const session = await requireRole("vendor")
-  const businessName = session.user.businessName?.trim()
   const firstName = session.user.name?.trim().split(/\s+/)[0] ?? "there"
 
   return (
     <>
-      <DashboardOverview
-        eyebrow="Vendor dashboard"
-        title={businessName ? `Welcome back, ${businessName}` : `Welcome back, ${firstName}`}
-        description="Your studio at a glance. Publish the services you offer, answer enquiries quickly and keep your availability up to date."
-        stats={[
-          {
-            label: "Service listings",
-            value: "—",
-            hint: "Your live and pending packages are listed below.",
-            icon: Store,
-          },
-          {
-            label: "Booking requests",
-            value: "—",
-            hint: "New enquiries wait in your inbox until you accept or decline.",
-            icon: CalendarCheck,
-          },
-          {
-            label: "Plan",
-            value: session.user.subscriptionPlan === "premium" ? "Premium" : "Free",
-            hint: "Upgrade when you are ready to feature more listings.",
-            icon: Sparkles,
-          },
-        ]}
-        actions={[
-          { label: "Booking requests", href: "/dashboard/vendor/bookings" },
-          { label: "Add a service", href: "/dashboard/vendor/services/new" },
-        ]}
+      <VendorOverviewPanel
+        firstName={firstName}
+        businessName={session.user.businessName}
       />
 
-      <VendorServicesPanel />
+      <div className="mt-12">
+        <VendorServicesPanel />
+      </div>
     </>
   )
 }

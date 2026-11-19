@@ -111,21 +111,21 @@ export function DashboardShell({
   const router = useRouter()
   const items = navForRole(user.role)
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isAccountOpen, setIsAccountOpen] = useState(false)
+  // A panel only counts as open while the pathname that opened it is still
+  // active. Navigation (including back/forward) therefore closes it without
+  // an effect that would trigger a cascading render.
+  const [sidebarPath, setSidebarPath] = useState<string | null>(null)
+  const [accountPath, setAccountPath] = useState<string | null>(null)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const accountRef = useRef<HTMLDivElement>(null)
 
-  const closePanels = () => {
-    setIsSidebarOpen(false)
-    setIsAccountOpen(false)
-  }
+  const isSidebarOpen = sidebarPath === pathname
+  const isAccountOpen = accountPath === pathname
 
-  // Navigating by any means (link, back button, refresh) collapses the mobile
-  // drawer so it never covers the page the user landed on.
-  useEffect(() => {
-    closePanels()
-  }, [pathname])
+  const closePanels = () => {
+    setSidebarPath(null)
+    setAccountPath(null)
+  }
 
   useEffect(() => {
     if (!isAccountOpen && !isSidebarOpen) {
@@ -134,12 +134,13 @@ export function DashboardShell({
 
     const onPointerDown = (event: MouseEvent) => {
       if (isAccountOpen && !accountRef.current?.contains(event.target as Node)) {
-        setIsAccountOpen(false)
+        setAccountPath(null)
       }
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        closePanels()
+        setSidebarPath(null)
+        setAccountPath(null)
       }
     }
 
@@ -288,7 +289,7 @@ export function DashboardShell({
                 aria-label="Open navigation"
                 aria-expanded={isSidebarOpen}
                 aria-controls="dashboard-sidebar"
-                onClick={() => setIsSidebarOpen(true)}
+                onClick={() => setSidebarPath(pathname)}
                 className="rounded-md p-2 text-wedplan-primary transition-colors hover:bg-wedplan-sage/30 lg:hidden"
               >
                 <Menu size={22} />
@@ -318,7 +319,11 @@ export function DashboardShell({
                   type="button"
                   aria-haspopup="menu"
                   aria-expanded={isAccountOpen}
-                  onClick={() => setIsAccountOpen((open) => !open)}
+                  onClick={() =>
+                    setAccountPath((current) =>
+                      current === pathname ? null : pathname,
+                    )
+                  }
                   className="flex items-center gap-2 rounded-full border border-wedplan-sage/60 py-1 pr-3 pl-1 transition-colors hover:border-wedplan-muted hover:bg-muted/60"
                 >
                   {user.image ? (

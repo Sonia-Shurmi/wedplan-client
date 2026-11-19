@@ -8,12 +8,7 @@ import { ArrowLeft, ImageOff, MapPin, TriangleAlert } from "lucide-react"
 import { BookingForm } from "@/components/bookings/booking-form"
 import { ApiError, api } from "@/lib/api"
 import { authClient } from "@/lib/auth-client"
-import {
-  formatServicePrice,
-  serviceImage,
-  vendorLabel,
-  type Service,
-} from "@/lib/services"
+import { serviceImage, vendorLabel, type Service } from "@/lib/services"
 
 type ViewState =
   | { kind: "loading" }
