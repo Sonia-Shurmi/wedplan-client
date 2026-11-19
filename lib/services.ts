@@ -20,6 +20,7 @@ export interface Service {
   images: string[]
   status: "pending" | "approved" | "rejected"
   isActive: boolean
+  rejectionReason?: string | null
   vendor: ServiceVendor | null
   isPremiumVendor: boolean
   createdAt: string

@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Compass,
   LayoutDashboard,
+  ListChecks,
   LogOut,
   Menu,
   PlusCircle,
@@ -92,6 +93,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           label: "Users",
           href: "/dashboard/admin/users",
           icon: Users,
+        },
+        {
+          label: "Service moderation",
+          href: "/dashboard/admin/services",
+          icon: ListChecks,
         },
         { label: "Browse services", href: "/services", icon: Store },
       ]
