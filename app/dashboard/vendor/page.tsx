@@ -29,8 +29,8 @@ export default async function VendorDashboardPage() {
           },
           {
             label: "Booking requests",
-            value: "0",
-            hint: "New enquiries wait here until you accept or decline them.",
+            value: "—",
+            hint: "New enquiries wait in your inbox until you accept or decline.",
             icon: CalendarCheck,
           },
           {
@@ -41,8 +41,8 @@ export default async function VendorDashboardPage() {
           },
         ]}
         actions={[
+          { label: "Booking requests", href: "/dashboard/vendor/bookings" },
           { label: "Add a service", href: "/dashboard/vendor/services/new" },
-          { label: "Browse services", href: "/services" },
         ]}
       />
 
