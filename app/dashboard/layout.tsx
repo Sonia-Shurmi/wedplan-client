@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
-import Navbar from "@/components/layout/navbar"
+import DashboardShell from "@/components/dashboard/dashboard-shell"
+import { isUserRole } from "@/lib/constants"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = {
@@ -11,17 +12,22 @@ export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // Server-side gate: role and blocked state come from the database, not from
-  // the optimistic cookie check in `proxy.ts`.
-  await requireSession()
+  // the optimistic cookie check in `proxy.ts`. The shell receives only the
+  // fields it needs so every link is generated from the verified role.
+  const session = await requireSession()
+  const user = session.user
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-[70svh] bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-14">
-          {children}
-        </div>
-      </main>
-    </>
+    <DashboardShell
+      user={{
+        name: user.name ?? "",
+        email: user.email ?? "",
+        image: user.image ?? null,
+        role: isUserRole(user.role) ? user.role : "customer",
+        subscriptionPlan: user.subscriptionPlan ?? "free",
+      }}
+    >
+      {children}
+    </DashboardShell>
   )
 }
