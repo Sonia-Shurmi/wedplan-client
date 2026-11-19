@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState, type FormEvent } from "react"
+import { useEffect, useState } from "react"
 import {
   ArrowLeft,
   Crown,
@@ -11,17 +11,12 @@ import {
   ShieldCheck,
   TriangleAlert,
 } from "lucide-react"
-import { toast } from "sonner"
 
+import { BookingForm } from "@/components/bookings/booking-form"
 import { ApiError, api } from "@/lib/api"
 import { authClient } from "@/lib/auth-client"
 import { categoryByName } from "@/lib/constants"
-import {
-  formatServicePrice,
-  serviceImage,
-  vendorLabel,
-  type Service,
-} from "@/lib/services"
+import { serviceImage, vendorLabel, type Service } from "@/lib/services"
 import { cn } from "@/lib/utils"
 
 interface ServiceDetailProps {
@@ -128,114 +123,6 @@ function ServiceGallery({ service }: { service: Service }) {
           ))}
         </div>
       ) : null}
-    </div>
-  )
-}
-
-function BookingPanel({ service }: { service: Service }) {
-  const [eventDate, setEventDate] = useState("")
-  const [location, setLocation] = useState("")
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState<string | null>(null)
-
-  const today = new Date().toISOString().slice(0, 10)
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    if (!eventDate) {
-      setError("Choose the date of your event.")
-      return
-    }
-    if (eventDate < today) {
-      setError("Choose today or a future date.")
-      return
-    }
-    if (!location.trim()) {
-      setError("Tell the vendor where the event will take place.")
-      return
-    }
-
-    setError(null)
-    toast.info("Booking requests open in the next step — your details are ready.")
-  }
-
-  return (
-    <div className="rounded-2xl border border-wedplan-sage/60 bg-card p-6 shadow-sm lg:sticky lg:top-24">
-      <p className="text-[11px] font-semibold tracking-[0.16em] text-wedplan-brown uppercase">
-        Enquire about this service
-      </p>
-      <p className="mt-2 font-heading text-2xl text-foreground">
-        {formatServicePrice(service.price, service.currency)}
-      </p>
-      <p className="mt-1 text-xs text-muted-foreground">Starting price · negotiable with the vendor</p>
-
-      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
-        <div className="space-y-1.5">
-          <label
-            htmlFor="event-date"
-            className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-          >
-            Event date
-          </label>
-          <input
-            id="event-date"
-            type="date"
-            min={today}
-            value={eventDate}
-            onChange={(event) => setEventDate(event.target.value)}
-            className="h-11 w-full rounded-lg border border-input bg-background px-3.5 text-sm text-foreground outline-none focus:border-wedplan-muted focus:ring-2 focus:ring-wedplan-sage/50"
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <label
-            htmlFor="event-location"
-            className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-          >
-            Event location
-          </label>
-          <input
-            id="event-location"
-            type="text"
-            value={location}
-            onChange={(event) => setLocation(event.target.value)}
-            placeholder="Venue or city"
-            className="h-11 w-full rounded-lg border border-input bg-background px-3.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/70 focus:border-wedplan-muted focus:ring-2 focus:ring-wedplan-sage/50"
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <label
-            htmlFor="booking-message"
-            className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-          >
-            Message to the vendor
-          </label>
-          <textarea
-            id="booking-message"
-            rows={4}
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            placeholder="Tell them about your day, guest count and anything you have in mind…"
-            className="w-full resize-y rounded-lg border border-input bg-background px-3.5 py-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/70 focus:border-wedplan-muted focus:ring-2 focus:ring-wedplan-sage/50"
-          />
-        </div>
-
-        {error ? <p className="text-xs text-destructive">{error}</p> : null}
-
-        <button
-          type="submit"
-          className="h-11 w-full rounded-lg bg-wedplan-primary text-sm font-semibold text-white transition-colors hover:bg-wedplan-dark"
-        >
-          Request to book
-        </button>
-      </form>
-
-      <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-        <ShieldCheck size={14} className="text-wedplan-muted" />
-        No payment is taken at this stage.
-      </p>
     </div>
   )
 }
@@ -458,7 +345,7 @@ export default function ServiceDetail({ id }: ServiceDetailProps) {
 
         <aside>
           {canBook ? (
-            <BookingPanel key={service._id} service={service} />
+            <BookingForm key={service._id} service={service} />
           ) : (
             <div className="rounded-2xl border border-wedplan-sage/60 bg-card p-6 text-sm leading-7 text-muted-foreground">
               <p className="font-heading text-xl text-foreground">
