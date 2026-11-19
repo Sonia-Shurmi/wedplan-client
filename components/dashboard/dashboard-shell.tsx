@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Sparkles,
   Store,
+  Users,
   X,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -86,6 +87,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           href: "/dashboard/admin",
           icon: LayoutDashboard,
           exact: true,
+        },
+        {
+          label: "Users",
+          href: "/dashboard/admin/users",
+          icon: Users,
         },
         { label: "Browse services", href: "/services", icon: Store },
       ]
