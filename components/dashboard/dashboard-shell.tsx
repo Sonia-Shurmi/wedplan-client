@@ -61,6 +61,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           icon: CalendarCheck,
         },
         { label: "Browse services", href: "/services", icon: Compass },
+        {
+          label: "Profile settings",
+          href: "/dashboard/profile",
+          icon: Settings,
+        },
       ]
     case "vendor":
       return [
@@ -81,6 +86,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           icon: PlusCircle,
         },
         { label: "Browse marketplace", href: "/services", icon: Compass },
+        {
+          label: "Profile settings",
+          href: "/dashboard/profile",
+          icon: Settings,
+        },
       ]
     case "admin":
       return [
@@ -106,6 +116,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           icon: BadgeDollarSign,
         },
         { label: "Browse services", href: "/services", icon: Store },
+        {
+          label: "Profile settings",
+          href: "/dashboard/profile",
+          icon: Settings,
+        },
       ]
   }
 }
