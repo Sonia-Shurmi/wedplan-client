@@ -51,12 +51,12 @@ export default function CategoriesSection() {
           </Link>
         </motion.div>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((category, index) => (
             <motion.div key={category.slug} {...reveal(index * 0.04)}>
               <Link
                 href={`/services?category=${encodeURIComponent(category.name)}`}
-                className="group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-2xl border border-wedplan-sage/60 p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="group relative flex min-h-[17rem] flex-col justify-end overflow-hidden rounded-2xl border border-wedplan-sage/60 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-5"
               >
                 <Image
                   src={category.image}
@@ -65,15 +65,15 @@ export default function CategoriesSection() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-wedplan-dark/85 via-wedplan-dark/35 to-wedplan-dark/10" />
-                <div className="relative z-10">
+                <div className="absolute inset-0 bg-gradient-to-t from-wedplan-dark/55 via-wedplan-dark/15 to-transparent" />
+                <div className="relative z-10 rounded-xl border border-white/15 bg-wedplan-dark/60 p-4 backdrop-blur-md">
                   <h3 className="font-heading text-xl text-white">
                     {category.name}
                   </h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/80">
+                  <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-white/85">
                     {category.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-wedplan-sage">
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-wedplan-sage">
                     Explore category
                     <ArrowUpRight
                       size={15}
