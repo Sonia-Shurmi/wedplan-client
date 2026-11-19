@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import type { LucideIcon } from "lucide-react"
 import {
+  BadgeDollarSign,
   CalendarCheck,
   ChevronDown,
   Compass,
@@ -98,6 +99,11 @@ const navForRole = (role: UserRole): NavItem[] => {
           label: "Service moderation",
           href: "/dashboard/admin/services",
           icon: ListChecks,
+        },
+        {
+          label: "Transactions",
+          href: "/dashboard/admin/transactions",
+          icon: BadgeDollarSign,
         },
         { label: "Browse services", href: "/services", icon: Store },
       ]
