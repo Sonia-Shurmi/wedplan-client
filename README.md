@@ -4,7 +4,7 @@ WedPlan is a full-stack wedding planning marketplace where couples discover wedd
 
 Customers can browse services without an account, but must be signed in to open a service's full details or send a booking request. Vendors get a dashboard for their services, booking requests and Premium subscription. Admins get a dashboard for users, service moderation and transactions.
 
-> **Live Website:** _Add the deployed client URL here after deployment (see [Deployment](#deployment))._
+> **Live Website:** https://wedplan-client-tau.vercel.app
 >
 > **Client Repository:** https://github.com/Sonia-Shurmi/wedplan-client
 > **Server Repository:** https://github.com/Sonia-Shurmi/wedplan-server
@@ -172,6 +172,7 @@ wedplan-client/
 │   ├── auth.ts                      # Better Auth server config
 │   ├── auth-client.ts               # Better Auth React client
 │   ├── api.ts                       # typed fetch wrapper + JWT attach
+│   ├── mongo.ts                     # serverless-safe Better Auth DB client
 │   ├── upload.ts                    # validated ImgBB upload with progress
 │   └── utils.ts
 ├── hooks/
@@ -183,9 +184,10 @@ wedplan-client/
 
 ```
 wedplan-server/
-├── api/index.ts                     # Vercel serverless entry
 ├── src/
-│   ├── server.ts / app.ts
+│   ├── app.ts                       # Express app + Vercel serverless default export
+│   ├── server.ts                    # Local listener + graceful shutdown
+│   ├── types/express.ts             # Request augmentation for the Vercel build
 │   ├── config/db.ts, env.ts
 │   ├── middleware/                  # jwt, role, block, error, validate
 │   ├── modules/
@@ -197,9 +199,11 @@ wedplan-server/
 │   │   └── stats/
 │   ├── scripts/                     # seeders + admin promotion
 │   └── utils/
-├── vercel.json
+├── vercel.json                      # $schema + buildCommand only
 └── .env.example
 ```
+
+The server has no `api/index.ts`: current Vercel Express detection uses the single default export from `src/app.ts`.
 
 ---
 
@@ -250,11 +254,12 @@ Fill in the values described in [Environment Variables](#environment-variables).
 ```bash
 cd wedplan-server
 npm run seed:categories    # six wedding categories
-npm run seed:services      # demo approved services
-npm run seed:admin -- you@example.com 'YourStrongPass1'
+npm run seed:services      # six public + one pending + one rejected listing
+npm run seed:demo          # role accounts + two sample bookings
+npm run seed:admin -- admin@wedplan.dev Demo1234
 ```
 
-The admin script upserts a real Better Auth credential account, so the account can sign in immediately and cannot be created through public registration.
+The admin script upserts a real Better Auth credential account, so the account can sign in immediately and cannot be created through public registration. `Demo1234` is only the published evaluation password; choose a different strong password for any non-demo deployment.
 
 ### 5. Start both apps
 
@@ -313,13 +318,14 @@ Open http://localhost:3000.
 
 ## Evaluation Accounts
 
-_Replace the placeholders below with the live credentials before submitting._
+These accounts exist in the deployed database and are recreated locally by the seed scripts.
 
-| Role     | Email                    | Password        | Notes                                           |
-| -------- | ------------------------ | --------------- | ----------------------------------------------- |
-| Admin    | `admin@wedplan.dev`      | `AdminPass1`    | Created with `npm run seed:admin`, never via UI |
-| Vendor   | `vendor@wedplan.dev`     | `VendorPass1`   | Premium vendor with seeded services             |
-| Customer | `customer@wedplan.dev`   | `CustomerPass1` | Has pending and accepted bookings               |
+| Role           | Email                  | Password    | Notes                                                       |
+| -------------- | ---------------------- | ----------- | ----------------------------------------------------------- |
+| Admin          | `admin@wedplan.dev`    | `Demo1234`  | Created with `npm run seed:admin`, never via public sign-up  |
+| Premium vendor | `studio@wedplan.dev`   | `Demo1234`  | Three approved services and an accepted booking              |
+| Free vendor    | `flora@wedplan.dev`    | `Demo1234`  | Free plan, one pending booking request                       |
+| Customer       | `couple@wedplan.dev`   | `Demo1234`  | One accepted and one pending booking                         |
 
 Admin accounts cannot be registered from the Sign Up page: the Better Auth `user.create.before` hook forces every public registration to `vendor` or `customer`.
 
@@ -335,48 +341,48 @@ Admin accounts cannot be registered from the Sign Up page: the Better Auth `user
 
 ### Client — Vercel
 
-| Setting          | Value                                          |
-| ---------------- | ---------------------------------------------- |
-| Framework        | Next.js                                        |
-| Root directory   | repository root                                |
-| Build command    | `npm run build`                                |
-| Environment      | all client variables from the tables above     |
+| Setting        | Value                                      |
+| -------------- | ------------------------------------------ |
+| Project        | `wedplan-client`                           |
+| Framework      | Next.js (auto-detected)                    |
+| Root directory | repository root                            |
+| Build command  | `npm run build`                            |
+| Production URL | https://wedplan-client-tau.vercel.app      |
 
-Set `NEXT_PUBLIC_APP_URL` and `BETTER_AUTH_URL` to the final production URL (e.g. `https://wedplan.vercel.app`) **before** the first production sign-in, so cookies and JWT issuers line up.
+`NEXT_PUBLIC_APP_URL`, `BETTER_AUTH_URL` and `CLIENT_URL` on the server all use that exact origin. `NEXT_PUBLIC_API_URL` and `API_URL` use `https://wedplan-server-gamma.vercel.app/api`.
 
 ### Server — Vercel
 
-The Express app is exported as a serverless handler from `api/index.ts` and routed by `vercel.json`.
+| Setting        | Value                                             |
+| -------------- | ------------------------------------------------- |
+| Project        | `wedplan-server`                                  |
+| Framework      | Express (auto-detected from `src/app.ts`)         |
+| Root directory | repository root                                   |
+| Build command  | `npm run build` (`vercel.json`)                   |
+| Production URL | https://wedplan-server-gamma.vercel.app           |
 
-| Setting        | Value                                        |
-| -------------- | -------------------------------------------- |
-| Framework      | Other                                        |
-| Root directory | repository root                              |
-| Build command  | `npm run build`                              |
-| Output         | `api/index.ts` (Node runtime)                |
+The default export in `src/app.ts` is the only serverless entry; there is no `api/index.ts`. `CLIENT_URL` is set to the client origin exactly (no trailing slash), and `BETTER_AUTH_URL` points at the same origin so the API can fetch `${BETTER_AUTH_URL}/api/auth/jwks`.
 
-Set `CLIENT_URL` to the client origin exactly (no trailing slash), and `BETTER_AUTH_URL` to the client origin so the API can fetch `${BETTER_AUTH_URL}/api/auth/jwks`.
-
-The server reuses one `MongoClient` across invocations to avoid connection storms on cold starts.
+The server caches its `MongoClient` across warm invocations and reconnects per request when a serverless topology has closed. The client's Better Auth adapter uses a live-client proxy for the same reason.
 
 ### Google OAuth
 
 Authorized JavaScript origin:
 
 ```
-https://your-client.vercel.app
+https://wedplan-client-tau.vercel.app
 ```
 
 Authorized redirect URI:
 
 ```
-https://your-client.vercel.app/api/auth/callback/google
+https://wedplan-client-tau.vercel.app/api/auth/callback/google
 ```
 
 ### Stripe webhook
 
 1. Stripe Dashboard → Developers → Webhooks → Add endpoint.
-2. Endpoint URL: `https://your-server.vercel.app/api/webhooks/stripe`
+2. Endpoint URL: `https://wedplan-server-gamma.vercel.app/api/webhooks/stripe`
 3. Events: `checkout.session.completed`, `invoice.paid`, `customer.subscription.deleted`.
 4. Copy the signing secret into `STRIPE_WEBHOOK_SECRET` and redeploy.
 
@@ -384,13 +390,14 @@ Premium is granted **only** inside this webhook. The `/payment/success` page mer
 
 ### Post-deployment checklist
 
-- [ ] Every public route reloads without a 404 (Vercel handles App Router routes automatically).
-- [ ] `/dashboard/*` reloads keep the user signed in.
-- [ ] Customer cannot open `/dashboard/vendor` or `/dashboard/admin` (redirected, plus API returns 403).
-- [ ] Stripe test upgrade flips the vendor to Premium and writes one transaction.
-- [ ] `STRIPE_WEBHOOK_SECRET` is set in production (not just locally).
-- [ ] Admin credentials from the table above work on the live site.
-- [ ] No `.env` file is present in either GitHub repository.
+- [x] Every public route reloads without a 404 (Vercel handles App Router routes automatically).
+- [x] `/dashboard/*` reloads keep the user signed in; hard refreshes on service details and `/payment/success` return 200.
+- [x] Customer cannot open `/dashboard/vendor` or `/dashboard/admin` (redirected, plus API returns 403).
+- [x] Stripe test upgrade (`4242 4242 4242 4242`) flips the vendor to Premium and writes one transaction.
+- [x] `STRIPE_WEBHOOK_SECRET` is set in production (not just locally); bad signatures return 400 with no writes.
+- [x] Admin credentials from the table above work on the live site.
+- [x] No `.env` file is present in either GitHub repository.
+- [x] 360 / 768 / 1024 / 1440 px layouts have no horizontal overflow; Lighthouse accessibility is 100 on public pages.
 
 ---
 
@@ -440,7 +447,8 @@ Use any future expiry date, any 3-digit CVC, and any postal code.
 | `npm run start`          | Run the compiled server                      |
 | `npm run typecheck`      | TypeScript check without output              |
 | `npm run seed:categories`| Insert the six wedding categories            |
-| `npm run seed:services`  | Insert demo approved services                |
+| `npm run seed:services`  | Insert six public + one pending + one rejected listing |
+| `npm run seed:demo`      | Insert role accounts + two sample bookings   |
 | `npm run seed:admin`     | Create/promote an admin account securely     |
 
 ---
