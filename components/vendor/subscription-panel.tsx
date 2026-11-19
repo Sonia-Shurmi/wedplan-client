@@ -104,7 +104,9 @@ export function SubscriptionPanel() {
       window.location.href = response.data.url
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
-        toast.error("Your Premium subscription is already active.")
+        toast.error(
+          errorMessage(error, "Your Premium subscription is already active."),
+        )
         setRetryKey((key) => key + 1)
         return
       }

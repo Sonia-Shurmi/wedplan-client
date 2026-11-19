@@ -62,8 +62,12 @@ export function GoogleButton({ label, callbackUrl }: GoogleButtonProps) {
         setIsLoading(false)
       }
       // On success the browser navigates to Google, so the spinner stays on.
-    } catch {
-      toast.error("Google sign-in could not be started. Please try again.")
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : "Google sign-in could not be started. Please try again.",
+      )
       setIsLoading(false)
     }
   }

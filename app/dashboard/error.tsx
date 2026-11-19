@@ -9,10 +9,10 @@ import { RotateCw, TriangleAlert } from "lucide-react"
  */
 export default function DashboardError({
   error,
-  reset,
+  retry,
 }: Readonly<{
   error: Error & { digest?: string }
-  reset: () => void
+  retry: () => void
 }>) {
   return (
     <div
@@ -39,7 +39,7 @@ export default function DashboardError({
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={reset}
+              onClick={retry}
               className="inline-flex items-center gap-2 rounded-lg bg-wedplan-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wedplan-dark"
             >
               <RotateCw size={15} />

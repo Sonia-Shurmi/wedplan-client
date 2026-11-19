@@ -53,6 +53,8 @@ export function SignInForm({ callbackUrl }: SignInFormProps) {
       "We could not sign you in. Please try again.",
     )
 
+    toast.error(message)
+
     if (code === "INVALID_EMAIL_OR_PASSWORD" || /invalid/i.test(message)) {
       setFormError("Incorrect email or password. Please try again.")
       return
@@ -99,8 +101,14 @@ export function SignInForm({ callbackUrl }: SignInFormProps) {
       toast.success("Welcome back!")
       router.replace(postAuthPath(callbackUrl, data?.user?.role))
       router.refresh()
-    } catch {
-      setFormError("Something went wrong. Please try again.")
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Something went wrong. Please try again."
+
+      toast.error(message)
+      setFormError(message)
     } finally {
       setIsSubmitting(false)
     }

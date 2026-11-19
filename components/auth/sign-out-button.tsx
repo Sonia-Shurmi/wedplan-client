@@ -28,8 +28,12 @@ export function SignOutButton({
       toast.success("You have been signed out.")
       router.replace("/")
       router.refresh()
-    } catch {
-      toast.error("We could not sign you out. Please try again.")
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : "We could not sign you out. Please try again.",
+      )
       setIsPending(false)
     }
   }

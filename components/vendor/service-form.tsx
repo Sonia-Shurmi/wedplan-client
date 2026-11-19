@@ -185,6 +185,12 @@ export default function ServiceForm({ mode, service }: ServiceFormProps) {
       router.push("/dashboard/vendor")
       router.refresh()
     } catch (error) {
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Something went wrong. Please try again.",
+      )
+
       if (error instanceof ApiError) {
         if (error.errors?.length) {
           setFieldErrors(

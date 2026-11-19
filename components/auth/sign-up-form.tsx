@@ -140,6 +140,8 @@ export function SignUpForm({
       "We could not create your account. Please try again.",
     )
 
+    toast.error(message)
+
     if (code === "USER_ALREADY_EXISTS" || /already exists/i.test(message)) {
       setFieldErrors((current) => ({
         ...current,
@@ -206,10 +208,14 @@ export function SignUpForm({
 
       router.replace(postAuthPath(callbackUrl, createdRole))
       router.refresh()
-    } catch {
-      setFormError(
-        "Something went wrong while creating your account. Please try again.",
-      )
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Something went wrong while creating your account. Please try again."
+
+      toast.error(message)
+      setFormError(message)
     } finally {
       setIsSubmitting(false)
     }
