@@ -163,6 +163,7 @@ wedplan-client/
 │   ├── profile/
 │   ├── error.tsx, not-found.tsx, loading.tsx
 │   ├── layout.tsx, page.tsx, globals.css
+├── public/images/               # hero + service photos served at /images/...
 ├── components/
 │   ├── ui/                          # shadcn primitives
 │   ├── layout/                      # navbar, footer, dashboard shell
@@ -260,6 +261,19 @@ npm run seed:admin -- admin@wedplan.dev Demo1234
 ```
 
 The admin script upserts a real Better Auth credential account, so the account can sign in immediately and cannot be created through public registration. `Demo1234` is only the published evaluation password; choose a different strong password for any non-demo deployment.
+
+### Service photos
+
+Copy wedding images into `wedplan-client/public/images/`. They are served publicly as `/images/<filename>`. `wedding.jpg` remains the hero/fallback image; other files are assigned to service galleries.
+
+After adding files, run this from the server repo to refresh only placeholder galleries (custom vendor uploads are preserved):
+
+```bash
+cd wedplan-server
+npm run seed:images
+```
+
+Redeploy the client after adding new image files so Vercel publishes them.
 
 ### 5. Start both apps
 
@@ -448,6 +462,7 @@ Use any future expiry date, any 3-digit CVC, and any postal code.
 | `npm run typecheck`      | TypeScript check without output              |
 | `npm run seed:categories`| Insert the six wedding categories            |
 | `npm run seed:services`  | Insert six public + one pending + one rejected listing |
+| `npm run seed:images`    | Assign `public/images` photos to placeholder galleries |
 | `npm run seed:demo`      | Insert role accounts + two sample bookings   |
 | `npm run seed:admin`     | Create/promote an admin account securely     |
 
