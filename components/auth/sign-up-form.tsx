@@ -402,7 +402,7 @@ export function SignUpForm({
                   <span className="mt-3 block text-sm font-semibold text-foreground">
                     {option.title}
                   </span>
-                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                  <span className="mt-1 block text-xs leading-5 text-foreground/70">
                     {option.description}
                   </span>
 

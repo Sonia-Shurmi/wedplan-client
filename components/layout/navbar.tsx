@@ -175,7 +175,7 @@ const Navbar = () => {
             </span>
             <span className="text-xs text-wedplan-brown">✦</span>
           </span>
-          <span className="mt-1 hidden text-[9px] font-medium tracking-[0.28em] text-wedplan-muted uppercase sm:block">
+          <span className="mt-1 hidden text-[9px] font-medium tracking-[0.28em] text-wedplan-brown uppercase sm:block">
             Wedding Marketplace
           </span>
         </Link>

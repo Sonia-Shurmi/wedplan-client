@@ -63,7 +63,7 @@ export function AuthShell({
         </div>
       </aside>
 
-      <section className="flex min-h-svh flex-col">
+      <main className="flex min-h-svh flex-col">
         <div className="flex items-center justify-between px-6 py-6 sm:px-10">
           <Link
             href="/"
@@ -95,7 +95,7 @@ export function AuthShell({
             {children}
           </div>
         </div>
-      </section>
+      </main>
     </div>
   )
 }
