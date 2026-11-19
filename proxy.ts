@@ -1,38 +1,29 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { getSessionCookie } from "better-auth/cookies"
 
-import { isSafeCallbackUrl } from "@/lib/constants"
-
-const AUTH_PAGES = new Set(["/sign-in", "/sign-up"])
-
 /**
- * Optimistic route protection.
+ * Optimistic route protection only.
  *
- * The presence of the session cookie is enough to decide where to send
- * someone; real authorization (role, blocked state) happens in server
- * components, where the database is authoritative.
+ * A cookie's presence is enough to pre-filter anonymous visitors from the
+ * dashboard. It is deliberately not used to redirect users away from the auth
+ * pages: a stale or revoked cookie would otherwise bounce `/sign-in` to
+ * `/dashboard`, where the authoritative server check sends them straight back.
+ * The sign-in page validates the session itself and redirects only when it is
+ * genuinely active.
  */
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
-  const hasSession = Boolean(getSessionCookie(request))
 
-  if (pathname.startsWith("/dashboard") && !hasSession) {
+  if (pathname.startsWith("/dashboard") && !getSessionCookie(request)) {
     const signIn = new URL("/sign-in", request.url)
     signIn.searchParams.set("callbackUrl", `${pathname}${search}`)
 
     return NextResponse.redirect(signIn)
   }
 
-  if (AUTH_PAGES.has(pathname) && hasSession) {
-    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl")
-    const target = isSafeCallbackUrl(callbackUrl) ? callbackUrl : "/dashboard"
-
-    return NextResponse.redirect(new URL(target, request.url))
-  }
-
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/sign-in", "/sign-up"],
+  matcher: ["/dashboard/:path*"],
 }
